@@ -1,0 +1,27 @@
+﻿CREATE PROCEDURE [model].[DeleteAccount]
+  @AccountNo CHAR(10)
+AS
+  SET NOCOUNT ON;
+  SET XACT_ABORT ON;
+
+  BEGIN TRANSACTION;
+  BEGIN TRY
+
+    DECLARE @Id UNIQUEIDENTIFIER = NULL;
+  
+    EXEC [dbo].[GetAccountId] @AccountNo, @Id OUTPUT;
+
+    DELETE FROM [dbo].[Account]
+    WHERE [Id] = @Id;
+
+    COMMIT TRANSACTION;
+
+  END TRY
+  BEGIN CATCH
+    IF XACT_STATE() = -1
+      ROLLBACK TRANSACTION;
+    THROW;
+    IF XACT_STATE() = 1
+      COMMIT TRANSACTION;
+    THROW;
+  END CATCH

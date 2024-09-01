@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[Account]
+(
+  [Id] UNIQUEIDENTIFIER NOT NULL,
+  [AccountNo] CHAR(10) NOT NULL,
+  [Balance] DECIMAL(38, 5) NOT NULL,
+  [SysStart] DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+  [SysEnd] DATETIME2 (7) GENERATED ALWAYS AS ROW END NOT NULL,
+  PERIOD FOR SYSTEM_TIME ([SysStart], [SysEnd])
+)
+WITH (
+  SYSTEM_VERSIONING = ON (
+    HISTORY_TABLE = [dbo].[Account_HISTORY],
+    DATA_CONSISTENCY_CHECK = ON
+  )
+)
+GO
+
+/* Primary Key */
+ALTER TABLE [dbo].[Account]
+  ADD CONSTRAINT [PK_Account]
+  PRIMARY KEY ([Id]);
+GO
+
+/* Alternate Key */
+CREATE UNIQUE NONCLUSTERED INDEX [AK_Account]
+  ON [dbo].[Account] ([AccountNo]);
+GO
+

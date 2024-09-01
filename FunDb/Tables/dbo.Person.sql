@@ -1,0 +1,28 @@
+﻿CREATE TABLE [dbo].[Person]
+(
+  [Id] UNIQUEIDENTIFIER NOT NULL,
+  [Ssn] CHAR(9) NOT NULL,
+  [FirstName] NVARCHAR(100) NOT NULL,
+  [LastName] NVARCHAR(100) NOT NULL,
+  [SysStart] DATETIME2 (7) GENERATED ALWAYS AS ROW START NOT NULL,
+  [SysEnd] DATETIME2 (7) GENERATED ALWAYS AS ROW END NOT NULL,
+  PERIOD FOR SYSTEM_TIME ([SysStart], [SysEnd])
+)
+WITH (
+  SYSTEM_VERSIONING = ON (
+    HISTORY_TABLE = [dbo].[Person_HISTORY],
+    DATA_CONSISTENCY_CHECK = ON
+  )
+)
+GO
+
+/* Primary Key */
+ALTER TABLE [dbo].[Person]
+  ADD CONSTRAINT [PK_Person]
+  PRIMARY KEY ([Id]);
+GO
+
+/* Alternate Key */
+CREATE UNIQUE NONCLUSTERED INDEX [AK_Person]
+  ON [dbo].[Person] ([Ssn]);
+GO
